@@ -22,7 +22,7 @@
 <body class="bg-gradient-to-br from-black via-gray-900 to-black text-white min-h-screen flex flex-col items-center justify-center p-6">
   <div class="w-full max-w-3xl glass rounded-xl shadow-xl p-8 fade-in">
     <div class="flex flex-col items-center justify-center mb-6">
-      <img id="logo" src="https://bafybeigqcwhkvz6nqvpfwxyan6w2n3mmix5gtutgnqjete3jfwsxnz52ay.ipfs.w3s.link/sendwise.png" alt="logo" class="h-32 w-32 mb-2" />
+      <img id="logo" src="https://bafybeigqcwhkvz6nqvpfwxyan6w2n3mmix5gtutgnqjete3jfwsxnz52ay.ipfs.w3s.link/sendwise.png" alt="logo" class="h-36 w-36 mb-2" />
       <h1 class="text-4xl font-bold text-pink-400">Sendwise</h1>
     </div>
     <p class="text-center text-gray-400 mb-6">Batch transfers made easy on Starknet 🚀</p>
@@ -60,8 +60,8 @@
     </div>
   </div>
 
-  <!-- Include StarknetKit UMD script -->
-  <script src="https://unpkg.com/starknetkit@latest/dist/index.umd.min.js"></script>
+  <!-- Load get-starknet UMD script -->
+  <script src="https://cdn.jsdelivr.net/npm/get-starknet@latest/dist/index.umd.js"></script>
   <script>
     const formSection = document.getElementById('form-section');
     const connectBtn = document.getElementById('connectBtn');
@@ -70,26 +70,21 @@
     let wallet = null;
 
     connectBtn.addEventListener('click', async () => {
-      if (!window.StarknetKit || typeof window.StarknetKit.connect !== 'function') {
-        alert('StarknetKit is not loaded. Please check your script tag or internet connection.');
+      const starknet = window.getStarknet?.();
+      if (!starknet) {
+        alert("Starknet wallet not found. Please install ArgentX or Braavos.");
         return;
       }
 
       try {
-        const result = await window.StarknetKit.connect({
-          modalMode: 'alwaysAsk',
-          webWalletUrl: 'https://web.argent.xyz',
-          chainId: 'SN_SEPOLIA',
-        });
-        if (result?.wallet?.isConnected && result.wallet.selectedAddress) {
-          wallet = result.wallet;
-          if (wallet.selectedAddress) {
-            walletAddressDisplay.textContent = wallet.selectedAddress.slice(0, 6) + '...' + wallet.selectedAddress.slice(-4);
-          }
+        await starknet.enable();
+        wallet = starknet;
+        if (wallet.selectedAddress) {
+          walletAddressDisplay.textContent = wallet.selectedAddress.slice(0, 6) + '...' + wallet.selectedAddress.slice(-4);
           sendBtn.disabled = false;
         }
       } catch (err) {
-        console.error('Wallet connection failed:', err);
+        console.error("Connection failed:", err);
       }
     });
 
