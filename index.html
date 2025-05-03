@@ -4,8 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sendwise</title>
-  <!-- StarknetKit UMD for browser -->
-  <script src="https://cdn.jsdelivr.net/npm/starknetkit@latest/dist/index.umd.min.js"></script>
+  <!-- Remove UMD script, use ESM import -->
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link id="favicon" rel="icon" type="image/png" href="https://bafybeigqcwhkvz6nqvpfwxyan6w2n3mmix5gtutgnqjete3jfwsxnz52ay.ipfs.w3s.link/sendwise.png" />
@@ -23,7 +22,7 @@
 <body class="bg-gradient-to-br from-black via-gray-900 to-black text-white min-h-screen flex flex-col items-center justify-center p-6">
   <div class="w-full max-w-3xl glass rounded-xl shadow-xl p-8 fade-in">
     <div class="flex flex-col items-center justify-center mb-6">
-      <img id="logo" src="https://bafybeigqcwhkvz6nqvpfwxyan6w2n3mmix5gtutgnqjete3jfwsxnz52ay.ipfs.w3s.link/sendwise.png" alt="logo" class="h-32 w-32 mb-2">
+      <img id="logo" src="https://bafybeigqcwhkvz6nqvpfwxyan6w2n3mmix5gtutgnqjete3jfwsxnz52ay.ipfs.w3s.link/sendwise.png" alt="logo" class="h-32 w-32 mb-2" />
       <h1 class="text-4xl font-bold text-pink-400">Sendwise</h1>
     </div>
     <p class="text-center text-gray-400 mb-6">Batch transfers made easy on Starknet 🚀</p>
@@ -61,7 +60,9 @@
     </div>
   </div>
 
-  <script>
+  <!-- Use ESM import for StarknetKit -->
+  <script type="module">
+    import { connect } from 'https://cdn.skypack.dev/starknetkit';
     const formSection = document.getElementById('form-section');
     const connectBtn = document.getElementById('connectBtn');
     const walletAddressDisplay = document.getElementById('walletAddress');
@@ -70,10 +71,7 @@
 
     connectBtn.addEventListener('click', async () => {
       try {
-        // Use lowercase global exposed by UMD
-        const SK = window.starknetkit;
-        if (!SK) throw new Error('StarknetKit not loaded');
-        const result = await SK.connect({ modalMode: 'alwaysAsk', webWalletUrl: 'https://web.argent.xyz', chainId: 'SN_SEPOLIA' });
+        const result = await connect({ modalMode: 'alwaysAsk', webWalletUrl: 'https://web.argent.xyz', chainId: 'SN_SEPOLIA' });
         if (result?.wallet?.isConnected && result.wallet.selectedAddress) {
           wallet = result.wallet;
           walletAddressDisplay.textContent = wallet.selectedAddress.slice(0,6) + '...' + wallet.selectedAddress.slice(-4);
@@ -86,7 +84,7 @@
 
     formSection.addEventListener('click', (e) => {
       if (e.target.classList.contains('addBtn')) {
-        formSection.insertAdjacentHTML('beforeend', 
+        formSection.insertAdjacentHTML('beforeend',
           `<div class="input-row flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0">
             <input placeholder="Recipient address" class="flex-1 p-3 bg-gray-800 rounded-lg border border-gray-700 input-focus" />
             <input placeholder="Amount" class="w-28 p-3 bg-gray-800 rounded-lg border border-gray-700 text-center input-focus" type="number" />
