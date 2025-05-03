@@ -7,7 +7,7 @@
   <script src="https://cdn.jsdelivr.net/npm/starknetkit@latest/dist/index.umd.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/starknet-edu/starknet-logo/main/starknet-logo.png" />
+  <link id="favicon" rel="icon" type="image/png" href="https://raw.githubusercontent.com/starknet-edu/starknet-logo/main/starknet-logo.png" />
   <style>
     body {
       font-family: 'Inter', sans-serif;
@@ -26,21 +26,27 @@
     }
     .input-focus:focus {
       outline: none;
-      border-color: #00c7ff;
-      box-shadow: 0 0 0 2px #00e1ff40;
+      border-color: #7c3aed;
+      box-shadow: 0 0 0 2px #a78bfa40;
+    }
+    .btn-gradient {
+      background: linear-gradient(to right, #7c3aed, #4f46e5);
+    }
+    .btn-gradient:hover {
+      background: linear-gradient(to right, #6d28d9, #4338ca);
     }
   </style>
 </head>
-<body class="bg-gradient-to-br from-gray-950 to-gray-800 text-white min-h-screen flex flex-col items-center justify-center p-6">
+<body class="bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 text-white min-h-screen flex flex-col items-center justify-center p-6">
   <div class="w-full max-w-3xl glass rounded-xl shadow-xl p-8 fade-in">
     <div class="flex items-center justify-center mb-6">
-      <img src="https://raw.githubusercontent.com/starknet-edu/starknet-logo/main/starknet-logo.png" alt="logo" class="h-8 w-8 mr-2">
-      <h1 class="text-4xl font-bold text-cyan-400">Sendwise</h1>
+      <img id="logo" src="https://raw.githubusercontent.com/starknet-edu/starknet-logo/main/starknet-logo.png" alt="logo" class="h-8 w-8 mr-2">
+      <h1 class="text-4xl font-bold text-purple-400">Sendwise</h1>
     </div>
     <p class="text-center text-gray-400 mb-6">Batch send ETH or STRK on Starknet with style 🚀</p>
 
     <div id="wallet-section" class="text-center mb-6">
-      <button id="connectBtn" class="bg-cyan-600 hover:bg-cyan-700 transition text-white font-bold py-2 px-6 rounded-full shadow">
+      <button id="connectBtn" class="btn-gradient transition text-white font-bold py-2 px-6 rounded-full shadow">
         Connect Wallet
       </button>
       <p id="walletAddress" class="mt-2 text-green-400 text-sm"></p>
@@ -55,8 +61,8 @@
           <option>STRK</option>
         </select>
         <div class="flex space-x-2 justify-center">
-          <button class="removeBtn text-red-500 text-xl">×</button>
-          <button class="addBtn text-green-500 text-xl">+</button>
+          <button class="removeBtn text-red-400 text-xl">×</button>
+          <button class="addBtn text-green-400 text-xl">+</button>
         </div>
       </div>
     </div>
@@ -66,7 +72,7 @@
     </div>
 
     <div class="mt-6 text-center">
-      <button id="sendBtn" disabled class="bg-cyan-600 hover:bg-cyan-700 transition text-white font-bold py-2 px-8 rounded-full shadow">
+      <button id="sendBtn" disabled class="btn-gradient transition text-white font-bold py-2 px-8 rounded-full shadow">
         Send Transaction
       </button>
     </div>
