@@ -4,41 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sendwise</title>
+  <!-- StarknetKit UMD for browser -->
   <script src="https://cdn.jsdelivr.net/npm/starknetkit@latest/dist/index.umd.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link id="favicon" rel="icon" type="image/png" href="https://bafybeigqcwhkvz6nqvpfwxyan6w2n3mmix5gtutgnqjete3jfwsxnz52ay.ipfs.w3s.link/sendwise.png" />
   <style>
-    body {
-      font-family: 'Inter', sans-serif;
-    }
-    .glass {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
-    .fade-in {
-      animation: fadeIn 0.8s ease-in-out;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .input-focus:focus {
-      outline: none;
-      border-color: #fb7185;
-      box-shadow: 0 0 0 2px #fb718540;
-    }
-    .btn-gradient {
-      background: linear-gradient(to right, #fb7185, #ef4444);
-    }
-    .btn-gradient:hover {
-      background: linear-gradient(to right, #f43f5e, #dc2626);
-    }
-    .addBtn, .removeBtn {
-      font-size: 1.5rem;
-      font-weight: bold;
-    }
+    body { font-family: 'Inter', sans-serif; }
+    .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); }
+    .fade-in { animation: fadeIn 0.8s ease-in-out; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
+    .input-focus:focus { outline:none; border-color:#fb7185; box-shadow:0 0 0 2px #fb718540; }
+    .btn-gradient { background:linear-gradient(to right,#fb7185,#ef4444); }
+    .btn-gradient:hover { background:linear-gradient(to right,#f43f5e,#dc2626); }
+    .addBtn, .removeBtn { font-size:1.5rem; font-weight:bold; cursor:pointer; }
   </style>
 </head>
 <body class="bg-gradient-to-br from-black via-gray-900 to-black text-white min-h-screen flex flex-col items-center justify-center p-6">
@@ -65,8 +44,8 @@
           <option>STRK</option>
         </select>
         <div class="flex space-x-2 justify-center">
-          <button class="removeBtn text-red-400">×</button>
-          <button class="addBtn text-green-400">+</button>
+          <button class="removeBtn text-red-400" title="Remove">×</button>
+          <button class="addBtn text-green-400" title="Add">+</button>
         </div>
       </div>
     </div>
@@ -87,20 +66,17 @@
     const connectBtn = document.getElementById('connectBtn');
     const walletAddressDisplay = document.getElementById('walletAddress');
     const sendBtn = document.getElementById('sendBtn');
-
     let wallet = null;
 
     connectBtn.addEventListener('click', async () => {
       try {
-        const result = await window.Starknetkit.connect({
-          modalMode: "alwaysAsk",
-          webWalletUrl: "https://web.argent.xyz",
-          chainId: "SN_SEPOLIA"
-        });
-
+        // StarknetKit UMD global detection
+        const SK = window.StarknetKit || window.starknetKit || window.Starknetkit;
+        if (!SK) throw new Error('StarknetKit not loaded');
+        const result = await SK.connect({ modalMode: 'alwaysAsk', webWalletUrl: 'https://web.argent.xyz', chainId: 'SN_SEPOLIA' });
         if (result?.wallet?.isConnected && result.wallet.selectedAddress) {
           wallet = result.wallet;
-          walletAddressDisplay.textContent = wallet.selectedAddress.slice(0, 6) + '...' + wallet.selectedAddress.slice(-4);
+          walletAddressDisplay.textContent = wallet.selectedAddress.slice(0,6) + '...' + wallet.selectedAddress.slice(-4);
           sendBtn.disabled = false;
         }
       } catch (err) {
@@ -110,46 +86,38 @@
 
     formSection.addEventListener('click', (e) => {
       if (e.target.classList.contains('addBtn')) {
-        formSection.insertAdjacentHTML('beforeend', `
-          <div class="input-row flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0">
+        formSection.insertAdjacentHTML('beforeend', 
+          `<div class="input-row flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0">
             <input placeholder="Recipient address" class="flex-1 p-3 bg-gray-800 rounded-lg border border-gray-700 input-focus" />
             <input placeholder="Amount" class="w-28 p-3 bg-gray-800 rounded-lg border border-gray-700 text-center input-focus" type="number" />
             <select class="p-3 bg-gray-800 rounded-lg border border-gray-700 input-focus">
-              <option>ETH</option>
-              <option>STRK</option>
+              <option>ETH</option><option>STRK</option>
             </select>
             <div class="flex space-x-2 justify-center">
-              <button class="removeBtn text-red-400">×</button>
-              <button class="addBtn text-green-400">+</button>
+              <button class="removeBtn text-red-400" title="Remove">×</button>
+              <button class="addBtn text-green-400" title="Add">+</button>
             </div>
-          </div>
-        `);
+          </div>`);
       }
-
       if (e.target.classList.contains('removeBtn')) {
         const row = e.target.closest('.input-row');
         const rows = formSection.querySelectorAll('.input-row');
-        if (rows.length > 1 && row) {
-          row.remove();
-        }
+        if (rows.length > 1 && row) row.remove();
       }
     });
 
-    sendBtn.onclick = () => {
+    sendBtn.addEventListener('click', () => {
       const rows = formSection.querySelectorAll('.input-row');
-      const recipients = [];
-      const amounts = [];
+      const recipients = [], amounts = [];
       rows.forEach(row => {
-        const inputs = row.querySelectorAll('input');
-        const address = inputs[0].value;
-        const amount = inputs[1].value;
-        if (address && amount) {
-          recipients.push(address);
-          amounts.push(amount);
+        const [addrInput, amtInput] = row.querySelectorAll('input');
+        if (addrInput.value && amtInput.value) {
+          recipients.push(addrInput.value);
+          amounts.push(amtInput.value);
         }
       });
-      alert("Would send to: " + JSON.stringify(recipients) + " with amounts: " + JSON.stringify(amounts));
-    };
+      alert(`Would send to: ${JSON.stringify(recipients)} with amounts: ${JSON.stringify(amounts)}`);
+    });
   </script>
 </body>
 </html>
