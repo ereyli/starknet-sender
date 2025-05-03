@@ -70,8 +70,8 @@
 
     connectBtn.addEventListener('click', async () => {
       try {
-        // StarknetKit UMD global detection
-        const SK = window.StarknetKit || window.starknetKit || window.Starknetkit;
+        // Use lowercase global exposed by UMD
+        const SK = window.starknetkit;
         if (!SK) throw new Error('StarknetKit not loaded');
         const result = await SK.connect({ modalMode: 'alwaysAsk', webWalletUrl: 'https://web.argent.xyz', chainId: 'SN_SEPOLIA' });
         if (result?.wallet?.isConnected && result.wallet.selectedAddress) {
