@@ -60,9 +60,9 @@
     </div>
   </div>
 
-  <!-- ESM import for StarknetKit -->
-  <script type="module">
-    import StarknetKit from 'https://cdn.skypack.dev/starknetkit';
+  <!-- Include StarknetKit UMD script -->
+  <script src="https://unpkg.com/starknetkit@latest/dist/index.umd.min.js"></script>
+  <script>
     const formSection = document.getElementById('form-section');
     const connectBtn = document.getElementById('connectBtn');
     const walletAddressDisplay = document.getElementById('walletAddress');
@@ -71,7 +71,7 @@
 
     connectBtn.addEventListener('click', async () => {
       try {
-        const result = await StarknetKit.connect({
+        const result = await window.StarknetKit.connect({
           modalMode: 'alwaysAsk',
           webWalletUrl: 'https://web.argent.xyz',
           chainId: 'SN_SEPOLIA',
