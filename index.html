@@ -7,7 +7,7 @@
   <script src="https://cdn.jsdelivr.net/npm/starknetkit@latest/dist/index.umd.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <link id="favicon" rel="icon" type="image/png" href="https://raw.githubusercontent.com/starknet-edu/starknet-logo/main/starknet-logo.png" />
+  <link id="favicon" rel="icon" type="image/png" href="logo.png" />
   <style>
     body {
       font-family: 'Inter', sans-serif;
@@ -26,24 +26,24 @@
     }
     .input-focus:focus {
       outline: none;
-      border-color: #7c3aed;
-      box-shadow: 0 0 0 2px #a78bfa40;
+      border-color: #00cfe8;
+      box-shadow: 0 0 0 2px rgba(0, 207, 232, 0.3);
     }
     .btn-gradient {
-      background: linear-gradient(to right, #7c3aed, #4f46e5);
+      background: linear-gradient(to right, #00cfe8, #007cf0);
     }
     .btn-gradient:hover {
-      background: linear-gradient(to right, #6d28d9, #4338ca);
+      background: linear-gradient(to right, #00b6d8, #005dcf);
     }
   </style>
 </head>
-<body class="bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 text-white min-h-screen flex flex-col items-center justify-center p-6">
+<body class="bg-gradient-to-br from-[#04111D] via-[#061822] to-[#0a1f2d] text-white min-h-screen flex flex-col items-center justify-center p-6">
   <div class="w-full max-w-3xl glass rounded-xl shadow-xl p-8 fade-in">
     <div class="flex items-center justify-center mb-6">
-      <img id="logo" src="https://raw.githubusercontent.com/starknet-edu/starknet-logo/main/starknet-logo.png" alt="logo" class="h-8 w-8 mr-2">
-      <h1 class="text-4xl font-bold text-purple-400">Sendwise</h1>
+      <img id="logo" src="logo.png" alt="logo" class="h-10 w-10 mr-3 rounded-full shadow-md">
+      <h1 class="text-4xl font-bold text-cyan-400">Sendwise</h1>
     </div>
-    <p class="text-center text-gray-400 mb-6">Batch send ETH or STRK on Starknet with style 🚀</p>
+    <p class="text-center text-gray-300 mb-6">Batch send ETH or STRK on Starknet with style 🚀</p>
 
     <div id="wallet-section" class="text-center mb-6">
       <button id="connectBtn" class="btn-gradient transition text-white font-bold py-2 px-6 rounded-full shadow">
@@ -67,8 +67,8 @@
       </div>
     </div>
 
-    <div class="mt-6 text-center text-gray-400">
-      <p>Service Fee: <strong>5 STRK</strong> or <strong>0.001 ETH</strong></p>
+    <div class="mt-6 text-center text-gray-300">
+      <p>Service Fee: <strong class="text-white">5 STRK</strong> or <strong class="text-white">0.001 ETH</strong></p>
     </div>
 
     <div class="mt-6 text-center">
