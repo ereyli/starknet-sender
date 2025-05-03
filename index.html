@@ -60,69 +60,71 @@
     </div>
   </div>
 
-  <!-- Load get-starknet UMD script -->
-  <script src="https://cdn.jsdelivr.net/npm/get-starknet@latest/dist/index.umd.js"></script>
+  <!-- Load get-starknet UMD script with defer -->
+  <script src="https://cdn.jsdelivr.net/npm/get-starknet@latest/dist/index.umd.js" defer></script>
   <script>
-    const formSection = document.getElementById('form-section');
-    const connectBtn = document.getElementById('connectBtn');
-    const walletAddressDisplay = document.getElementById('walletAddress');
-    const sendBtn = document.getElementById('sendBtn');
-    let wallet = null;
+    window.addEventListener('DOMContentLoaded', () => {
+      const formSection = document.getElementById('form-section');
+      const connectBtn = document.getElementById('connectBtn');
+      const walletAddressDisplay = document.getElementById('walletAddress');
+      const sendBtn = document.getElementById('sendBtn');
+      let wallet = null;
 
-    connectBtn.addEventListener('click', async () => {
-      const starknet = window.getStarknet?.();
-      if (!starknet) {
-        alert("Starknet wallet not found. Please install ArgentX or Braavos.");
-        return;
-      }
-
-      try {
-        await starknet.enable();
-        wallet = starknet;
-        if (wallet.selectedAddress) {
-          walletAddressDisplay.textContent = wallet.selectedAddress.slice(0, 6) + '...' + wallet.selectedAddress.slice(-4);
-          sendBtn.disabled = false;
+      connectBtn.addEventListener('click', async () => {
+        const starknet = typeof window.getStarknet === 'function' ? window.getStarknet() : null;
+        if (!starknet) {
+          alert("Starknet wallet not found. Please install ArgentX or Braavos.");
+          return;
         }
-      } catch (err) {
-        console.error("Connection failed:", err);
-      }
-    });
 
-    formSection.addEventListener('click', (e) => {
-      if (e.target.classList.contains('addBtn')) {
-        formSection.insertAdjacentHTML('beforeend',
-          `<div class="input-row flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0">
-            <input placeholder="Recipient address" class="flex-1 p-3 bg-gray-800 rounded-lg border border-gray-700 input-focus" />
-            <input placeholder="Amount" class="w-28 p-3 bg-gray-800 rounded-lg border border-gray-700 text-center input-focus" type="number" />
-            <select class="p-3 bg-gray-800 rounded-lg border border-gray-700 input-focus">
-              <option>ETH</option><option>STRK</option>
-            </select>
-            <div class="flex space-x-2 justify-center">
-              <button class="removeBtn text-red-400" title="Remove">×</button>
-              <button class="addBtn text-green-400" title="Add">+</button>
-            </div>
-          </div>`);
-      }
-      if (e.target.classList.contains('removeBtn')) {
-        const row = e.target.closest('.input-row');
-        const rows = formSection.querySelectorAll('.input-row');
-        if (rows.length > 1 && row) row.remove();
-      }
-    });
-
-    sendBtn.addEventListener('click', () => {
-      const rows = formSection.querySelectorAll('.input-row');
-      const recipients = [], amounts = [];
-      rows.forEach(row => {
-        const inputs = row.querySelectorAll('input');
-        const address = inputs[0].value;
-        const amount = inputs[1].value;
-        if (address && amount) {
-          recipients.push(address);
-          amounts.push(amount);
+        try {
+          await starknet.enable();
+          wallet = starknet;
+          if (wallet.selectedAddress) {
+            walletAddressDisplay.textContent = wallet.selectedAddress.slice(0, 6) + '...' + wallet.selectedAddress.slice(-4);
+            sendBtn.disabled = false;
+          }
+        } catch (err) {
+          console.error("Connection failed:", err);
         }
       });
-      alert(`Would send to: ${JSON.stringify(recipients)} with amounts: ${JSON.stringify(amounts)}`);
+
+      formSection.addEventListener('click', (e) => {
+        if (e.target.classList.contains('addBtn')) {
+          formSection.insertAdjacentHTML('beforeend',
+            `<div class="input-row flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0">
+              <input placeholder="Recipient address" class="flex-1 p-3 bg-gray-800 rounded-lg border border-gray-700 input-focus" />
+              <input placeholder="Amount" class="w-28 p-3 bg-gray-800 rounded-lg border border-gray-700 text-center input-focus" type="number" />
+              <select class="p-3 bg-gray-800 rounded-lg border border-gray-700 input-focus">
+                <option>ETH</option><option>STRK</option>
+              </select>
+              <div class="flex space-x-2 justify-center">
+                <button class="removeBtn text-red-400" title="Remove">×</button>
+                <button class="addBtn text-green-400" title="Add">+</button>
+              </div>
+            </div>`);
+        }
+        if (e.target.classList.contains('removeBtn')) {
+          const row = e.target.closest('.input-row');
+          const rows = formSection.querySelectorAll('.input-row');
+          if (rows.length > 1 && row) row.remove();
+        }
+      });
+
+      sendBtn.addEventListener('click', () => {
+        const rows = formSection.querySelectorAll('.input-row');
+        const recipients = [], amounts = [];
+        rows.forEach(row => {
+          const inputs = row.querySelectorAll('input');
+          const address = inputs[0].value;
+          const amount = inputs[1].value;
+          if (address && amount) {
+            recipients.push(address);
+            amounts.push(amount);
+          }
+        });
+        alert(`Would send to: ${JSON.stringify(recipients)} with amounts: ${JSON.stringify(amounts)}`);
+      });
     });
   </script>
 </body>
