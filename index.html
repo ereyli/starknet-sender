@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sendwise</title>
-  <!-- Remove UMD script, use ESM import -->
+  <!-- Tailwind CSS -->
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link id="favicon" rel="icon" type="image/png" href="https://bafybeigqcwhkvz6nqvpfwxyan6w2n3mmix5gtutgnqjete3jfwsxnz52ay.ipfs.w3s.link/sendwise.png" />
@@ -60,9 +60,9 @@
     </div>
   </div>
 
-  <!-- Use ESM import for StarknetKit -->
+  <!-- ESM import for StarknetKit -->
   <script type="module">
-    import { connect } from 'https://cdn.skypack.dev/starknetkit';
+    import StarknetKit from 'https://cdn.skypack.dev/starknetkit';
     const formSection = document.getElementById('form-section');
     const connectBtn = document.getElementById('connectBtn');
     const walletAddressDisplay = document.getElementById('walletAddress');
@@ -71,10 +71,14 @@
 
     connectBtn.addEventListener('click', async () => {
       try {
-        const result = await connect({ modalMode: 'alwaysAsk', webWalletUrl: 'https://web.argent.xyz', chainId: 'SN_SEPOLIA' });
+        const result = await StarknetKit.connect({
+          modalMode: 'alwaysAsk',
+          webWalletUrl: 'https://web.argent.xyz',
+          chainId: 'SN_SEPOLIA',
+        });
         if (result?.wallet?.isConnected && result.wallet.selectedAddress) {
           wallet = result.wallet;
-          walletAddressDisplay.textContent = wallet.selectedAddress.slice(0,6) + '...' + wallet.selectedAddress.slice(-4);
+          walletAddressDisplay.textContent = wallet.selectedAddress.slice(0, 6) + '...' + wallet.selectedAddress.slice(-4);
           sendBtn.disabled = false;
         }
       } catch (err) {
@@ -108,10 +112,12 @@
       const rows = formSection.querySelectorAll('.input-row');
       const recipients = [], amounts = [];
       rows.forEach(row => {
-        const [addrInput, amtInput] = row.querySelectorAll('input');
-        if (addrInput.value && amtInput.value) {
-          recipients.push(addrInput.value);
-          amounts.push(amtInput.value);
+        const inputs = row.querySelectorAll('input');
+        const address = inputs[0].value;
+        const amount = inputs[1].value;
+        if (address && amount) {
+          recipients.push(address);
+          amounts.push(amount);
         }
       });
       alert(`Would send to: ${JSON.stringify(recipients)} with amounts: ${JSON.stringify(amounts)}`);
