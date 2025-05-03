@@ -70,6 +70,11 @@
     let wallet = null;
 
     connectBtn.addEventListener('click', async () => {
+      if (!window.StarknetKit || typeof window.StarknetKit.connect !== 'function') {
+        alert('StarknetKit is not loaded. Please check your script tag or internet connection.');
+        return;
+      }
+
       try {
         const result = await window.StarknetKit.connect({
           modalMode: 'alwaysAsk',
@@ -78,7 +83,9 @@
         });
         if (result?.wallet?.isConnected && result.wallet.selectedAddress) {
           wallet = result.wallet;
-          walletAddressDisplay.textContent = wallet.selectedAddress.slice(0, 6) + '...' + wallet.selectedAddress.slice(-4);
+          if (wallet.selectedAddress) {
+            walletAddressDisplay.textContent = wallet.selectedAddress.slice(0, 6) + '...' + wallet.selectedAddress.slice(-4);
+          }
           sendBtn.disabled = false;
         }
       } catch (err) {
