@@ -57,7 +57,7 @@
     </div>
 
     <div id="form-section" class="space-y-4">
-      <div class="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0">
+      <div class="input-row flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0">
         <input placeholder="Recipient address" class="flex-1 p-3 bg-gray-800 rounded-lg border border-gray-700 input-focus" />
         <input placeholder="Amount" class="w-28 p-3 bg-gray-800 rounded-lg border border-gray-700 text-center input-focus" type="number" />
         <select class="p-3 bg-gray-800 rounded-lg border border-gray-700 input-focus">
@@ -90,24 +90,29 @@
 
     let wallet = null;
 
-    connectBtn.onclick = async () => {
-      const starknetkit = window.starknetkit;
-      const result = await starknetkit.connect({
-        modalMode: "alwaysAsk",
-        webWalletUrl: "https://web.argent.xyz",
-        chainId: "SN_SEPOLIA"
-      });
-      if (result?.wallet?.isConnected && result.wallet.selectedAddress) {
-        wallet = result.wallet;
-        walletAddressDisplay.textContent = result.wallet.selectedAddress.slice(0, 6) + '...' + result.wallet.selectedAddress.slice(-4);
-        sendBtn.disabled = false;
-      }
-    };
+    connectBtn.addEventListener('click', async () => {
+      try {
+        const starknetkit = window.starknetkit;
+        const result = await starknetkit.connect({
+          modalMode: "alwaysAsk",
+          webWalletUrl: "https://web.argent.xyz",
+          chainId: "SN_SEPOLIA"
+        });
 
-    formSection.addEventListener('click', e => {
+        if (result?.wallet?.isConnected && result.wallet.selectedAddress) {
+          wallet = result.wallet;
+          walletAddressDisplay.textContent = wallet.selectedAddress.slice(0, 6) + '...' + wallet.selectedAddress.slice(-4);
+          sendBtn.disabled = false;
+        }
+      } catch (err) {
+        console.error('Wallet connection failed:', err);
+      }
+    });
+
+    formSection.addEventListener('click', (e) => {
       if (e.target.classList.contains('addBtn')) {
         formSection.insertAdjacentHTML('beforeend', `
-          <div class="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0">
+          <div class="input-row flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0">
             <input placeholder="Recipient address" class="flex-1 p-3 bg-gray-800 rounded-lg border border-gray-700 input-focus" />
             <input placeholder="Amount" class="w-28 p-3 bg-gray-800 rounded-lg border border-gray-700 text-center input-focus" type="number" />
             <select class="p-3 bg-gray-800 rounded-lg border border-gray-700 input-focus">
@@ -121,16 +126,18 @@
           </div>
         `);
       }
+
       if (e.target.classList.contains('removeBtn')) {
-        const rows = formSection.querySelectorAll('.flex');
-        if (rows.length > 1) {
-          e.target.closest('.flex').remove();
+        const row = e.target.closest('.input-row');
+        const rows = formSection.querySelectorAll('.input-row');
+        if (rows.length > 1 && row) {
+          row.remove();
         }
       }
     });
 
     sendBtn.onclick = () => {
-      const rows = formSection.querySelectorAll('.flex');
+      const rows = formSection.querySelectorAll('.input-row');
       const recipients = [];
       const amounts = [];
       rows.forEach(row => {
@@ -142,7 +149,6 @@
           amounts.push(amount);
         }
       });
-
       alert("Would send to: " + JSON.stringify(recipients) + " with amounts: " + JSON.stringify(amounts));
     };
   </script>
