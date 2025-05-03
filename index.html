@@ -92,8 +92,7 @@
 
     connectBtn.addEventListener('click', async () => {
       try {
-        const starknetkit = window.starknetkit;
-        const result = await starknetkit.connect({
+        const result = await window.Starknetkit.connect({
           modalMode: "alwaysAsk",
           webWalletUrl: "https://web.argent.xyz",
           chainId: "SN_SEPOLIA"
