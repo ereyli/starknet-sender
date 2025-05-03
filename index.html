@@ -7,7 +7,7 @@
   <script src="https://cdn.jsdelivr.net/npm/starknetkit@latest/dist/index.umd.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <link id="favicon" rel="icon" type="image/png" href="https://bafybeic37j3ogwdjvcvz7zyfjkvhyad5kn3abig3ao7ostikulmufdu3sy.ipfs.w3s.link/Sendwise%20logo.png" />
+  <link id="favicon" rel="icon" type="image/png" href="https://bafybeigqcwhkvz6nqvpfwxyan6w2n3mmix5gtutgnqjete3jfwsxnz52ay.ipfs.w3s.link/sendwise.png" />
   <style>
     body {
       font-family: 'Inter', sans-serif;
@@ -40,7 +40,7 @@
 <body class="bg-gradient-to-br from-black via-gray-900 to-black text-white min-h-screen flex flex-col items-center justify-center p-6">
   <div class="w-full max-w-3xl glass rounded-xl shadow-xl p-8 fade-in">
     <div class="flex flex-col items-center justify-center mb-6">
-      <img id="logo" src="https://bafybeic37j3ogwdjvcvz7zyfjkvhyad5kn3abig3ao7ostikulmufdu3sy.ipfs.w3s.link/Sendwise%20logo.png" alt="logo" class="h-24 w-24 mb-2">
+      <img id="logo" src="https://bafybeigqcwhkvz6nqvpfwxyan6w2n3mmix5gtutgnqjete3jfwsxnz52ay.ipfs.w3s.link/sendwise.png" alt="logo" class="h-28 w-28 mb-2">
       <h1 class="text-4xl font-bold text-pink-400">Sendwise</h1>
     </div>
     <p class="text-center text-gray-400 mb-6">Batch transfers made easy on Starknet 🚀</p>
@@ -53,7 +53,7 @@
     </div>
 
     <div id="form-section" class="space-y-4">
-      <div class="form-row flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0">
+      <div class="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0">
         <input placeholder="Recipient address" class="flex-1 p-3 bg-gray-800 rounded-lg border border-gray-700 input-focus" />
         <input placeholder="Amount" class="w-28 p-3 bg-gray-800 rounded-lg border border-gray-700 text-center input-focus" type="number" />
         <select class="p-3 bg-gray-800 rounded-lg border border-gray-700 input-focus">
@@ -90,7 +90,7 @@
       const result = await window.starknetkit.connect({
         modalMode: "alwaysAsk",
         webWalletUrl: "https://web.argent.xyz",
-        chainId: "SN_MAIN"
+        chainId: "SN_MAIN",
       });
       if (result?.wallet?.isConnected && result.wallet.selectedAddress) {
         wallet = result.wallet;
@@ -101,21 +101,21 @@
 
     formSection.addEventListener('click', e => {
       if (e.target.classList.contains('addBtn')) {
-        const template = document.querySelector('.form-row');
-        const clone = template.cloneNode(true);
-        clone.querySelectorAll('input').forEach(i => i.value = '');
-        formSection.appendChild(clone);
+        const currentRow = e.target.closest('.flex');
+        const newRow = currentRow.cloneNode(true);
+        newRow.querySelectorAll('input').forEach(input => input.value = '');
+        formSection.appendChild(newRow);
       }
       if (e.target.classList.contains('removeBtn')) {
-        const rows = formSection.querySelectorAll('.form-row');
+        const rows = formSection.querySelectorAll('.flex');
         if (rows.length > 1) {
-          e.target.closest('.form-row').remove();
+          e.target.closest('.flex').remove();
         }
       }
     });
 
     sendBtn.onclick = () => {
-      const rows = formSection.querySelectorAll('.form-row');
+      const rows = formSection.querySelectorAll('.flex');
       const recipients = [];
       const amounts = [];
       rows.forEach(row => {
