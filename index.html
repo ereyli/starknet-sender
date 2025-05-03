@@ -7,6 +7,7 @@
   <script src="https://cdn.jsdelivr.net/npm/starknetkit@latest/dist/index.umd.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/starknet-edu/starknet-logo/main/starknet-logo.png" />
   <style>
     body {
       font-family: 'Inter', sans-serif;
@@ -16,11 +17,26 @@
       backdrop-filter: blur(12px);
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
+    .fade-in {
+      animation: fadeIn 0.8s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .input-focus:focus {
+      outline: none;
+      border-color: #00c7ff;
+      box-shadow: 0 0 0 2px #00e1ff40;
+    }
   </style>
 </head>
-<body class="bg-gradient-to-b from-gray-950 to-gray-800 text-white min-h-screen flex flex-col items-center justify-center p-4">
-  <div class="w-full max-w-3xl glass rounded-xl shadow-lg p-8">
-    <h1 class="text-4xl font-bold text-center mb-3 text-cyan-400">Sendwise</h1>
+<body class="bg-gradient-to-br from-gray-950 to-gray-800 text-white min-h-screen flex flex-col items-center justify-center p-6">
+  <div class="w-full max-w-3xl glass rounded-xl shadow-xl p-8 fade-in">
+    <div class="flex items-center justify-center mb-6">
+      <img src="https://raw.githubusercontent.com/starknet-edu/starknet-logo/main/starknet-logo.png" alt="logo" class="h-8 w-8 mr-2">
+      <h1 class="text-4xl font-bold text-cyan-400">Sendwise</h1>
+    </div>
     <p class="text-center text-gray-400 mb-6">Batch send ETH or STRK on Starknet with style 🚀</p>
 
     <div id="wallet-section" class="text-center mb-6">
@@ -31,15 +47,17 @@
     </div>
 
     <div id="form-section" class="space-y-4">
-      <div class="flex space-x-2">
-        <input placeholder="Recipient address" class="flex-1 p-3 bg-gray-800 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-500" />
-        <input placeholder="Amount" class="w-28 p-3 bg-gray-800 rounded-lg border border-gray-700 text-center" type="number" />
-        <select class="p-3 bg-gray-800 rounded-lg border border-gray-700">
+      <div class="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0">
+        <input placeholder="Recipient address" class="flex-1 p-3 bg-gray-800 rounded-lg border border-gray-700 input-focus" />
+        <input placeholder="Amount" class="w-28 p-3 bg-gray-800 rounded-lg border border-gray-700 text-center input-focus" type="number" />
+        <select class="p-3 bg-gray-800 rounded-lg border border-gray-700 input-focus">
           <option>ETH</option>
           <option>STRK</option>
         </select>
-        <button class="removeBtn text-red-500 text-xl">×</button>
-        <button class="addBtn text-green-500 text-xl">+</button>
+        <div class="flex space-x-2 justify-center">
+          <button class="removeBtn text-red-500 text-xl">×</button>
+          <button class="addBtn text-green-500 text-xl">+</button>
+        </div>
       </div>
     </div>
 
@@ -104,7 +122,6 @@
       });
 
       alert("Would send to: " + JSON.stringify(recipients) + " with amounts: " + JSON.stringify(amounts));
-      // TODO: Replace with actual contract call to batchSend
     };
   </script>
 </body>
