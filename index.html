@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sendwise</title>
+  <script src="https://cdn.jsdelivr.net/npm/starknetkit@latest/dist/index.umd.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .glass {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-b from-gray-950 to-gray-800 text-white min-h-screen flex flex-col items-center justify-center p-4">
+  <div class="w-full max-w-3xl glass rounded-xl shadow-lg p-8">
+    <h1 class="text-4xl font-bold text-center mb-3 text-cyan-400">Sendwise</h1>
+    <p class="text-center text-gray-400 mb-6">Batch send ETH or STRK on Starknet with style 🚀</p>
+
+    <div id="wallet-section" class="text-center mb-6">
+      <button id="connectBtn" class="bg-cyan-600 hover:bg-cyan-700 transition text-white font-bold py-2 px-6 rounded-full shadow">
+        Connect Wallet
+      </button>
+      <p id="walletAddress" class="mt-2 text-green-400 text-sm"></p>
+    </div>
+
+    <div id="form-section" class="space-y-4">
+      <div class="flex space-x-2">
+        <input placeholder="Recipient address" class="flex-1 p-3 bg-gray-800 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-500" />
+        <input placeholder="Amount" class="w-28 p-3 bg-gray-800 rounded-lg border border-gray-700 text-center" type="number" />
+        <select class="p-3 bg-gray-800 rounded-lg border border-gray-700">
+          <option>ETH</option>
+          <option>STRK</option>
+        </select>
+        <button class="removeBtn text-red-500 text-xl">×</button>
+        <button class="addBtn text-green-500 text-xl">+</button>
+      </div>
+    </div>
+
+    <div class="mt-6 text-center text-gray-400">
+      <p>Service Fee: <strong>5 STRK</strong> or <strong>0.001 ETH</strong></p>
+    </div>
+
+    <div class="mt-6 text-center">
+      <button id="sendBtn" disabled class="bg-cyan-600 hover:bg-cyan-700 transition text-white font-bold py-2 px-8 rounded-full shadow">
+        Send Transaction
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const formSection = document.getElementById('form-section');
+    const connectBtn = document.getElementById('connectBtn');
+    const walletAddressDisplay = document.getElementById('walletAddress');
+    const sendBtn = document.getElementById('sendBtn');
+
+    let wallet = null;
+
+    connectBtn.onclick = async () => {
+      const result = await window.starknetkit.connect({
+        modalMode: "alwaysAsk",
+        webWalletUrl: "https://web.argent.xyz",
+        chainId: "SN_SEPOLIA",
+      });
+      if (result?.wallet?.isConnected && result.wallet.selectedAddress) {
+        wallet = result.wallet;
+        walletAddressDisplay.textContent = result.wallet.selectedAddress.slice(0, 6) + '...' + result.wallet.selectedAddress.slice(-4);
+        sendBtn.disabled = false;
+      }
+    };
+
+    formSection.addEventListener('click', e => {
+      if (e.target.classList.contains('addBtn')) {
+        const row = e.target.closest('div').cloneNode(true);
+        row.querySelectorAll('input').forEach(i => i.value = '');
+        formSection.appendChild(row);
+      }
+      if (e.target.classList.contains('removeBtn')) {
+        const rows = formSection.querySelectorAll('div');
+        if (rows.length > 1) {
+          e.target.closest('div').remove();
+        }
+      }
+    });
+
+    sendBtn.onclick = () => {
+      const rows = formSection.querySelectorAll('div');
+      const recipients = [];
+      const amounts = [];
+      rows.forEach(row => {
+        const inputs = row.querySelectorAll('input');
+        const address = inputs[0].value;
+        const amount = inputs[1].value;
+        if (address && amount) {
+          recipients.push(address);
+          amounts.push(amount);
+        }
+      });
+
+      alert("Would send to: " + JSON.stringify(recipients) + " with amounts: " + JSON.stringify(amounts));
+      // TODO: Replace with actual contract call to batchSend
+    };
+  </script>
+</body>
+</html>
